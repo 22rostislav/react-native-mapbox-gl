@@ -120,6 +120,12 @@ public class ReactNativeMapboxGLModule extends ReactContextBaseJavaModule {
         aPackage.getManager().setVisibleCoordinateBounds(aPackage.getManager().getMapView(), info);
     }
 
+    @ReactMethod
+    public void deselectMarkers() {
+        MapView mapView = aPackage.getManager().getMapView();
+        mapView.deselectMarkers();
+    }
+
     public void setPackage(ReactNativeMapboxGLPackage aPackage) {
         this.aPackage = aPackage;
     }
