@@ -120,6 +120,18 @@ public class ReactNativeMapboxGLModule extends ReactContextBaseJavaModule {
         aPackage.getManager().setVisibleCoordinateBounds(aPackage.getManager().getMapView(), info);
     }
 
+    @ReactMethod
+    public void getUserCoordinates(Callback callback) {
+        MapView view = aPackage.getManager().getMapView();
+        Location location = view.getMyLocation();
+        WritableMap result = Arguments.createMap();
+        if (location!=null) {
+            result.putDouble("latitude", location.getLatitude());
+            result.putDouble("longitude", location.getLongitude());
+        }
+        callback.invoke(result);
+    }
+
     public void setPackage(ReactNativeMapboxGLPackage aPackage) {
         this.aPackage = aPackage;
     }
