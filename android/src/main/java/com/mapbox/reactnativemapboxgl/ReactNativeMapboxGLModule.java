@@ -120,6 +120,25 @@ public class ReactNativeMapboxGLModule extends ReactContextBaseJavaModule {
         aPackage.getManager().setVisibleCoordinateBounds(aPackage.getManager().getMapView(), info);
     }
 
+    @ReactMethod
+    public void getBounds(Callback callback) {
+        MapView mapView = aPackage.getManager().getMapView();
+        PointF maxxminypoint = new PointF(mapView.getX() + mapView.getWidth(), mapView.getY());
+        PointF minxmaxypoint = new PointF(mapView.getX(), mapView.getY() + mapView.getHeight());
+        LatLng ne = mapView.fromScreenLocation(maxxminypoint);
+        LatLng sw = mapView.fromScreenLocation(minxmaxypoint);
+        WritableMap bounds = Arguments.createMap();
+        WritableMap nemap = Arguments.createMap();
+        WritableMap swmap = Arguments.createMap();
+        nemap.putDouble("lat", ne.getLatitude());
+        nemap.putDouble("lng", ne.getLongitude());
+        swmap.putDouble("lat", sw.getLatitude());
+        swmap.putDouble("lng", sw.getLongitude());
+        bounds.putMap("ne", nemap);
+        bounds.putMap("sw", swmap);
+        callback.invoke(bounds);
+    }
+
     public void setPackage(ReactNativeMapboxGLPackage aPackage) {
         this.aPackage = aPackage;
     }
