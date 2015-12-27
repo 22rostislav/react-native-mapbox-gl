@@ -130,6 +130,11 @@ public class ReactNativeMapboxGLModule extends ReactContextBaseJavaModule {
             result.putDouble("longitude", location.getLongitude());
         }
         callback.invoke(result);
+
+    @ReactMethod
+    public void deselectMarkers() {
+        MapView mapView = aPackage.getManager().getMapView();
+        mapView.deselectMarkers();
     }
 
     public void setPackage(ReactNativeMapboxGLPackage aPackage) {
