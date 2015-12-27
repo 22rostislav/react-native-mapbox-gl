@@ -334,6 +334,7 @@ public class ReactNativeMapboxGLManager extends SimpleViewManager<MapView> {
     }
 
     public void removeAllAnnotations(MapView view, @Nullable Boolean placeHolder) {
+        _annotations.clear();
         view.removeAllAnnotations();
     }
 
