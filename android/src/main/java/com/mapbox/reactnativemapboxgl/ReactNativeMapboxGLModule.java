@@ -3,6 +3,7 @@ package com.mapbox.reactnativemapboxgl;
 
 import android.content.Context;
 import android.util.Log;
+import android.graphics.PointF;
 import java.util.HashMap;
 import java.util.Map;
 
