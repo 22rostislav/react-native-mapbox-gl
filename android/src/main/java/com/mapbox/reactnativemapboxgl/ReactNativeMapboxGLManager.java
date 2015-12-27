@@ -70,6 +70,8 @@ public class ReactNativeMapboxGLManager extends SimpleViewManager<MapView> {
     public static final String PROP_COMPASS_IS_HIDDEN = "compassIsHidden";
     private MapView mapView;
 
+    public Map _annotations = new HashMap<Integer, ReadableMap>();
+
 
     @Override
     public String getName() {
