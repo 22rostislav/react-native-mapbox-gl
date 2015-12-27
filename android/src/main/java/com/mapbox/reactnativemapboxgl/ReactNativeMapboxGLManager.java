@@ -12,6 +12,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ReactProp;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -84,6 +85,23 @@ public class ReactNativeMapboxGLManager extends SimpleViewManager<MapView> {
         mapView.onCreate(null);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        MapView.OnMarkerClickListener listener = new MapView.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                ReadableMap annotation = (ReadableMap) _annotations.get(marker.getId());
+                if (annotation != null) {
+                    WritableMap eventData = Arguments.createMap();
+                    eventData.putString("markerId", annotation.getString("id"));
+                    eventData.putInt("markerOnMapId", (int) marker.getId());
+
+                    ReactContext reactContext = (ReactContext) mapView.getContext();
+                    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit("onMarkerClick", eventData);
+                }
+                return true;
+            }
+        };
+        mapView.setOnMarkerClickListener(listener);
         return mapView;
     }
 
