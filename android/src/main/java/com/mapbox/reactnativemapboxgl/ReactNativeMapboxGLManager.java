@@ -14,6 +14,8 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ReactProp;
 import com.mapbox.mapboxsdk.constants.Style;
+import com.mapbox.mapboxsdk.annotations.Marker;
+
 import android.graphics.RectF;
 import com.mapbox.mapboxsdk.geometry.CoordinateBounds;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -37,6 +39,10 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import android.graphics.drawable.BitmapDrawable;
+
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -104,6 +110,17 @@ public class ReactNativeMapboxGLManager extends SimpleViewManager<MapView> {
         return new BitmapDrawable(view.getResources(), x);
     }
 
+    private Boolean isOnMap(ReadableMap annotation) {
+        Iterator i = _annotations.values().iterator();
+        while (i.hasNext()) {
+            ReadableMap item = (ReadableMap) i.next();
+            if (item.getString("id").equals(annotation.getString("id"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @ReactProp(name = PROP_ANNOTATIONS)
     public void setAnnotations(MapView view, @Nullable ReadableArray value) {
         if (value == null || value.size() < 1) {
@@ -114,6 +131,10 @@ public class ReactNativeMapboxGLManager extends SimpleViewManager<MapView> {
                 ReadableMap annotation = value.getMap(i);
                 String type = annotation.getString("type");
                 if (type.equals("point")) {
+                    if (isOnMap(annotation)) {
+                        continue;
+                    }
+
                     double latitude = annotation.getArray("coordinates").getDouble(0);
                     double longitude = annotation.getArray("coordinates").getDouble(1);
                     LatLng markerCenter = new LatLng(latitude, longitude);
@@ -139,7 +160,8 @@ public class ReactNativeMapboxGLManager extends SimpleViewManager<MapView> {
                             e.printStackTrace();
                         }
                     }
-                    view.addMarker(marker);
+                    Marker addedMarker = view.addMarker(marker);
+                    _annotations.put(addedMarker.getId(), annotation);
                 } else if (type.equals("polyline")) {
                     int coordSize = annotation.getArray("coordinates").size();
                     PolylineOptions polyline = new PolylineOptions();
